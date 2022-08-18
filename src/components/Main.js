@@ -5,6 +5,10 @@ import List from "./List"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
+import { useDispatch, useSelector } from "react-redux"
+import { addItem } from "../features/listSlice"
+import { addIncome } from "../features/incomeSlice"
+import { addExpense } from "../features/expenseSlice"
 
 const MainContainer = styled.main`
   display: flex;
@@ -28,9 +32,11 @@ export default function Main() {
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
-  //   form handler
-  const [validated, setValidated] = useState(false)
+  //   dispatch function
+  const dispatch = useDispatch()
+  const list = useSelector((state) => state.list.value) // set record id
 
+  //   form handler
   const handleSubmit = (e) => {
     e.preventDefault()
     const form = e.currentTarget
@@ -38,14 +44,17 @@ export default function Main() {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      setValidated(true)
       const Record = {
+        id: list.length + 1,
         description: form.description.value,
         category: form.category.value,
-        type: form.income.value ? "Income" : "Expense",
+        type: form.income.checked ? "income" : "expense",
         amount: form.amount.value,
       }
-      console.log(Record)
+      //   console.log(Record)
+      dispatch(addItem(Record))
+      handleClose()
+      form.income.checked ? dispatch(addIncome(form.amount.value)) : dispatch(addExpense(form.amount.value))
     }
   }
   return (
@@ -54,12 +63,12 @@ export default function Main() {
         <FlexBox>
           <SearchInput placeholder="Search.." />
           <IconButton>
-            <i class="bi bi-arrow-down-up"></i>
+            <i className="bi bi-arrow-down-up"></i>
           </IconButton>
         </FlexBox>
         <div className="d-flex justify-content-end">
           <IconButton onClick={handleShow}>
-            <i class="bi bi-plus-circle"></i>
+            <i className="bi bi-plus-circle"></i>
           </IconButton>
         </div>
       </TopBar>
@@ -72,7 +81,7 @@ export default function Main() {
         </Modal.Header>
         <Modal.Body>
           {/* form */}
-          <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="description">
               <Form.Label>Description</Form.Label>
               <Form.Control type="text" cols="5" placeholder="Description" required />
