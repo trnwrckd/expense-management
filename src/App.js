@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import styled from "styled-components"
+import TotalTransaction from "./components/TotalTransaction"
+import Filters from "./components/Filters"
+import Main from "./components/Main"
+
+const AppContainer = styled.div`
+  text-align: center;
+  background: #efefef;
+`
+
+const Heading = styled.h2`
+  font-size: 1.5rem;
+`
+const Container = styled.div`
+  margin: 2rem 22.5%;
+  display: flex;
+  justify-content: space-between;
+`
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <AppContainer>
+      <Heading>Personal Expense Tracker</Heading>
+      <TotalTransaction />
+      <Container>
+        <Filters />
+        <Main />
+      </Container>
+    </AppContainer>
+  )
 }
 
-export default App;
+export default App
