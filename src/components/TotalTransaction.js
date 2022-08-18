@@ -1,5 +1,6 @@
 import React from "react"
 import styled from "styled-components"
+import { useSelector } from "react-redux/es/exports"
 
 const TransactionContainer = styled.div`
   height: 5rem;
@@ -20,11 +21,15 @@ const Expense = styled.div`
   color: red;
 `
 
+// value from reducer
+
 export default function TotalTransaction() {
+  const income = useSelector((state) => state.income.value)
+  const expense = useSelector((state) => state.expense.value)
   return (
     <TransactionContainer>
-      <Income>Income: ৳ 14,0000</Income>
-      <Expense>Expense: ৳ 11,0000</Expense>
+      <Income>Income: ৳ {income}</Income>
+      <Expense>Expense: ৳ {expense}</Expense>
     </TransactionContainer>
   )
 }

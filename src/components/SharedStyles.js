@@ -6,7 +6,15 @@ export const FlexBox = styled.div`
   align-items: center;
 `
 
-export const Button = styled.button`
-  border: 1px solid black;
+export const IconButton = styled.button`
+  border: none;
+  display: inline-block;
   cursor: pointer;
+  height: 100%;
+  font-size: 1.5rem;
+  transition: 0.5s all;
+  &:hover {
+    color: orangered;
+    background: transparent;
+  }
 `
