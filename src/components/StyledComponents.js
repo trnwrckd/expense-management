@@ -26,8 +26,8 @@ export const TransactionContainer = styled.div`
   height: 5rem;
   width: 50%;
   margin: 0 auto;
-  border-radius: 15px;
-  border: 2px solid black;
+  border-radius: 10px;
+  background: #efefef;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -35,10 +35,12 @@ export const TransactionContainer = styled.div`
   font-size: 1.5rem;
 `
 export const Income = styled.div`
-  color: green;
+  color: #1f5932;
+  font-weight: bold;
 `
 export const Expense = styled.div`
-  color: red;
+  color: #b81f45;
+  font-weight: bold;
 `
 
 // main component
@@ -66,7 +68,10 @@ export const SearchIcon = styled.button`
   background: transparent;
   border: none;
   right: 0;
-  color: crimson;
+  color: #198754;
+  &:hover {
+    color: #156942;
+  }
 `
 export const IconButton = styled.button`
   border: none;
@@ -75,19 +80,19 @@ export const IconButton = styled.button`
   height: 100%;
   font-size: 1.2rem;
   background: transparent;
-  color: crimson;
+  color: #198754;
   transition: 0.5s all;
 
   &:hover {
-    color: black;
+    color: #156942;
   }
 `
 // filter component
 export const FiltersContainer = styled.aside`
   margin: 0 0.25rem;
   padding: 0.5rem;
-  border-radius: 15px;
-  border: 2px solid black;
+  border-radius: 10px;
+  background: #b9edca;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -98,10 +103,11 @@ export const FilterHeading = styled.p`
   font-weight: bold;
 `
 export const FilterContainer = styled.div`
-  border: 1px solid black;
+  border: 2px solid white;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+  font-weight: 600;
   padding: 0.25rem 0.5rem;
   margin: 0.5rem 0;
 `
@@ -112,8 +118,9 @@ export const ListContainer = styled.div`
   margin: 0.5rem 0;
 `
 export const ListItem = styled.div`
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 10px;
-  margin: 0.5rem 0;
+  font-weight: 600;
+  margin: 0.5rem 0.25rem;
   padding: 0.25rem 0.5rem;
 `

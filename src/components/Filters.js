@@ -12,14 +12,19 @@ export default function Filters() {
 
   const handleFilterSubmit = (e) => {
     e.preventDefault()
-    // const filters = e.currentTarget
     setFilters(e.currentTarget)
     if (filters) {
       let newList = filterHandler(filters, list)
-      console.log("recieving", newList)
       dispatch(filterList(newList))
     }
   }
+
+  useEffect(() => {
+    if (filters) {
+      let newList = filterHandler(filters, list)
+      dispatch(filterList(newList))
+    }
+  }, [filters])
 
   return (
     <FiltersContainer>
@@ -58,7 +63,7 @@ export default function Filters() {
             </div>
           </Form.Group>
         </FilterContainer>
-        <Button variant="primary" type="submit" size="sm">
+        <Button variant="success" type="submit" size="sm">
           Apply Filters
         </Button>
       </Form>

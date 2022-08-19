@@ -8,6 +8,7 @@ import { addItem } from "../features/listSlice"
 import { addIncome } from "../features/incomeSlice"
 import { addExpense } from "../features/expenseSlice"
 import List from "./List"
+import filterReducer, { filterList } from "../features/filteredListSlice"
 
 export default function Main() {
   // form modal handlers
@@ -17,9 +18,13 @@ export default function Main() {
 
   const list = useSelector((state) => state.list.value) // set record id + pass down props to List
   const modifiedListFromLocalStorage = useSelector((state) => state.filtered.value)
-  const [listToDisplay, setListToDisplay] = useState(modifiedListFromLocalStorage)
-
+  const [listToDisplay, setListToDisplay] = useState(modifiedListFromLocalStorage || list)
   const dispatch = useDispatch() //   dispatch function
+
+  //   if localstorage has list, show that
+  useEffect(() => {
+    setListToDisplay(modifiedListFromLocalStorage.length === 0 ? list : modifiedListFromLocalStorage)
+  }, [list, modifiedListFromLocalStorage])
 
   //   form handler
   const handleSubmit = (e) => {
@@ -41,34 +46,39 @@ export default function Main() {
       form.income.checked ? dispatch(addIncome(form.amount.value)) : dispatch(addExpense(form.amount.value))
     }
   }
+
   useEffect(() => {
-    setListToDisplay(modifiedListFromLocalStorage.length === 0 ? list : modifiedListFromLocalStorage)
-  }, [list, modifiedListFromLocalStorage])
+    setFilteredList(listToDisplay)
+  }, [listToDisplay])
 
   //   search
   const [filteredList, setFilteredList] = useState(listToDisplay)
+  useEffect(() => {
+    dispatch(filterList(filteredList))
+  }, [filteredList])
+
   const [searchParam, setSearchParam] = useState("")
   useEffect(() => {
     const timeOutId = setTimeout(() => {
-      let filteredList = listToDisplay.filter((item) => item.description.includes(searchParam))
-      setFilteredList(filteredList)
+      let newList = listToDisplay.filter((item) => item.description.includes(searchParam))
+      setFilteredList(newList)
     }, 500)
     return () => clearTimeout(timeOutId)
-  }, [searchParam, listToDisplay])
+  }, [searchParam])
 
   //   sort
   const [sortedStatus, setSortedStatus] = useState(false)
   useEffect(() => {
-    let filteredList = Array.from(listToDisplay)
+    let newList = Array.from(listToDisplay)
     if (sortedStatus) {
       // sort ascending
-      filteredList.sort((a, b) => a.amount - b.amount)
+      newList.sort((a, b) => a.amount - b.amount)
     } else {
       // sort descending
-      filteredList.sort((a, b) => b.amount - a.amount)
+      newList.sort((a, b) => b.amount - a.amount)
     }
-    setFilteredList(filteredList)
-  }, [sortedStatus, listToDisplay])
+    setFilteredList(newList)
+  }, [sortedStatus])
 
   return (
     <MainContainer>
@@ -88,12 +98,14 @@ export default function Main() {
         </FlexBox>
         <div className="d-flex justify-content-end">
           <IconButton onClick={handleShow}>
-            <i className="bi bi-plus-circle"></i>
+            <i className="bi bi-plus-circle-fill"></i>
           </IconButton>
         </div>
       </TopBar>
-      {modifiedListFromLocalStorage.length === 0 && <p className="my-2 text-danger"> Not found </p>}
-      <List list={filteredList || listToDisplay}></List>
+
+      {/* list component */}
+      {modifiedListFromLocalStorage.length === 0 && filteredList.length === 0 && <p className="my-2 text-danger"> Not found </p>}
+      <List list={filteredList || listToDisplay} pageNum={1}></List>
 
       {/* modal */}
       <Modal show={show} onHide={handleClose}>

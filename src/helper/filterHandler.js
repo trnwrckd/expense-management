@@ -1,8 +1,6 @@
 const checkBoxFilter = (filteredList, list, filterArray) => {
   //   if price wasn't set, filteredList would be empty
   let currentList = filteredList.length === 0 ? list : filteredList
-  console.log("fil 1,", filteredList)
-  console.log("cur", currentList)
   // resetting filteredList
   if (filterArray.find((val) => val !== "")) {
     filteredList = []
@@ -11,7 +9,6 @@ const checkBoxFilter = (filteredList, list, filterArray) => {
   // apply filter
   filterArray.forEach((filterParam) => {
     if (filterParam !== "") {
-      console.log(filterParam)
       let tempList = currentList.filter((item) => item.type === filterParam.toLowerCase() || item.category === filterParam)
       tempList.forEach((tempItem) => {
         if (filteredList.findIndex((i) => tempItem.id === i.id) === -1) {
@@ -20,7 +17,6 @@ const checkBoxFilter = (filteredList, list, filterArray) => {
       })
     }
   })
-  console.log("fil", filteredList)
 
   return filteredList
 }
@@ -60,7 +56,7 @@ const filterHandler = (filters, list) => {
   filteredList = checkBoxFilter(filteredList, list, typeFilter)
   filteredList = checkBoxFilter(filteredList, list, categoryFilter)
 
-  console.log("returning", filteredList)
+  // console.log("returning", filteredList)
   return filteredList
 }
 
