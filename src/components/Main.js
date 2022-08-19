@@ -1,7 +1,5 @@
-import React, { useState } from "react"
-import styled from "styled-components"
-import { FlexBox, IconButton } from "./SharedStyles"
-import List from "./List"
+import React, { useEffect, useState } from "react"
+import { FlexBox, IconButton, MainContainer, TopBar, SearchBar, SearchInput, SearchIcon } from "./StyledComponents"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
@@ -9,32 +7,19 @@ import { useDispatch, useSelector } from "react-redux"
 import { addItem } from "../features/listSlice"
 import { addIncome } from "../features/incomeSlice"
 import { addExpense } from "../features/expenseSlice"
-
-const MainContainer = styled.main`
-  display: flex;
-  min-width: 70%;
-  flex-direction: column;
-  margin: 0 0.25rem;
-  padding: 0.25rem 0.5rem;
-`
-const TopBar = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-`
-
-const SearchInput = styled.input`
-  height: 100%;
-`
+import List from "./List"
 
 export default function Main() {
   // form modal handlers
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
-  //   dispatch function
-  const dispatch = useDispatch()
-  const list = useSelector((state) => state.list.value) // set record id
+
+  const list = useSelector((state) => state.list.value) // set record id + pass down props to List
+  const modifiedListFromLocalStorage = useSelector((state) => state.filtered.value)
+  const [listToDisplay, setListToDisplay] = useState(modifiedListFromLocalStorage)
+
+  const dispatch = useDispatch() //   dispatch function
 
   //   form handler
   const handleSubmit = (e) => {
@@ -51,18 +36,53 @@ export default function Main() {
         type: form.income.checked ? "income" : "expense",
         amount: form.amount.value,
       }
-      //   console.log(Record)
       dispatch(addItem(Record))
       handleClose()
       form.income.checked ? dispatch(addIncome(form.amount.value)) : dispatch(addExpense(form.amount.value))
     }
   }
+  useEffect(() => {
+    setListToDisplay(modifiedListFromLocalStorage.length === 0 ? list : modifiedListFromLocalStorage)
+  }, [list, modifiedListFromLocalStorage])
+
+  //   search
+  const [filteredList, setFilteredList] = useState(listToDisplay)
+  const [searchParam, setSearchParam] = useState("")
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      let filteredList = listToDisplay.filter((item) => item.description.includes(searchParam))
+      setFilteredList(filteredList)
+    }, 500)
+    return () => clearTimeout(timeOutId)
+  }, [searchParam, listToDisplay])
+
+  //   sort
+  const [sortedStatus, setSortedStatus] = useState(false)
+  useEffect(() => {
+    let filteredList = Array.from(listToDisplay)
+    if (sortedStatus) {
+      // sort ascending
+      filteredList.sort((a, b) => a.amount - b.amount)
+    } else {
+      // sort descending
+      filteredList.sort((a, b) => b.amount - a.amount)
+    }
+    setFilteredList(filteredList)
+  }, [sortedStatus, listToDisplay])
+
   return (
     <MainContainer>
       <TopBar>
         <FlexBox>
-          <SearchInput placeholder="Search.." />
-          <IconButton>
+          <SearchBar>
+            <SearchInput placeholder="Search.." onChange={(event) => setSearchParam(event.target.value)} />
+            <SearchIcon className="bi bi-search" type="submit"></SearchIcon>
+          </SearchBar>
+          <IconButton
+            onClick={() => {
+              setSortedStatus(!sortedStatus)
+            }}
+          >
             <i className="bi bi-arrow-down-up"></i>
           </IconButton>
         </FlexBox>
@@ -72,7 +92,8 @@ export default function Main() {
           </IconButton>
         </div>
       </TopBar>
-      <List></List>
+      {modifiedListFromLocalStorage.length === 0 && <p className="my-2 text-danger"> Not found </p>}
+      <List list={filteredList || listToDisplay}></List>
 
       {/* modal */}
       <Modal show={show} onHide={handleClose}>

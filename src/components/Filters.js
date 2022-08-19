@@ -1,109 +1,67 @@
-import React from "react"
-import styled from "styled-components"
-const FiltersContainer = styled.aside`
-  //   width: 30%;
-  margin: 0 0.25rem;
-  padding: 0.5rem;
-  border-radius: 15px;
-  border: 2px solid black;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  font-size: 0.8rem;
-`
-const FilterHeading = styled.p`
-  margin: 0;
-  font-size: 1rem;
-`
-
-const FilterContainer = styled.div`
-  border: 1px solid black;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  padding: 0.25rem;
-  margin: 0.5rem 0;
-`
+import React, { useEffect, useState } from "react"
+import { Form, Button } from "react-bootstrap"
+import { FiltersContainer, FilterHeading, FilterContainer } from "./StyledComponents"
+import { useDispatch, useSelector } from "react-redux"
+import filterHandler from "../helper/filterHandler"
+import { filterList } from "../features/filteredListSlice"
 
 export default function Filters() {
+  const list = useSelector((state) => state.list.value)
+  const [filters, setFilters] = useState(undefined)
+  const dispatch = useDispatch()
+
+  const handleFilterSubmit = (e) => {
+    e.preventDefault()
+    // const filters = e.currentTarget
+    setFilters(e.currentTarget)
+    if (filters) {
+      let newList = filterHandler(filters, list)
+      console.log("recieving", newList)
+      dispatch(filterList(newList))
+    }
+  }
+
   return (
     <FiltersContainer>
-      <h3>Filter</h3>
-      <div>
+      <h4 className="fs-5 my-0">Filter</h4>
+      <Form onSubmit={handleFilterSubmit}>
         <FilterContainer>
           <FilterHeading>Range</FilterHeading>
-          <div className="d-flex justify-content-between my-1">
-            <label htmlFor="min">Min</label>
-            <input className="w-75" type="number" name="min" id="min" />
-          </div>
-          <div className="d-flex justify-content-between my-1">
-            <label htmlFor="max">Max</label>
-            <input className="w-75" type="number" name="max" id="max" />
-          </div>
+          <Form.Group className="d-flex justify-content-between align-items-center my-1">
+            <Form.Label htmlFor="min">Min</Form.Label>
+            <Form.Control className="w-75" type="number" name="min" id="min" min="0" />
+          </Form.Group>
+          <Form.Group className="d-flex justify-content-between align-items-center my-1">
+            <Form.Label htmlFor="max">Max</Form.Label>
+            <Form.Control className="w-75" type="number" name="max" id="max" />
+          </Form.Group>
         </FilterContainer>
         <FilterContainer>
           <FilterHeading>Type</FilterHeading>
-          <div>
-            <input type="checkbox" name="Income" id="income" />
-            <label htmlFor="income" className="ms-2">
-              {" "}
-              Income{" "}
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="expense" id="expense" />
-            <label htmlFor="expense" className="ms-2">
-              {" "}
-              Expense{" "}
-            </label>
-          </div>
+          <Form.Group>
+            <Form.Check type="checkbox" name="Income" id="income" label="Income" />
+            <Form.Check type="checkbox" name="Expense" id="expense" label="Expense" />
+          </Form.Group>
         </FilterContainer>
         <FilterContainer>
           <FilterHeading>Category</FilterHeading>
-          <div>
-            <input type="checkbox" name="food" id="food" />
-            <label htmlFor="food" className="ms-2">
-              {" "}
-              Food{" "}
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="travel" id="travel" />
-            <label htmlFor="travel" className="ms-2">
-              {" "}
-              Travel{" "}
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="salary" id="salary" />
-            <label htmlFor="salary" className="ms-2">
-              {" "}
-              Salary{" "}
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="utilities" id="utilities" />
-            <label htmlFor="utilities" className="ms-2">
-              {" "}
-              Utilities{" "}
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="medical" id="medical" />
-            <label htmlFor="medical" className="ms-2">
-              {" "}
-              Medical{" "}
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="personal" id="personal" />
-            <label htmlFor="personal" className="ms-2">
-              {" "}
-              Personal{" "}
-            </label>
-          </div>
+          <Form.Group className="d-flex justify-content-between">
+            <div>
+              <Form.Check type="checkbox" name="Food" id="food" label="Food" />
+              <Form.Check type="checkbox" name="Travel" id="travel" label="Travel" />
+              <Form.Check type="checkbox" name="Salary" id="salary" label="Salary" />
+            </div>
+            <div>
+              <Form.Check type="checkbox" name="Utilities" id="utilities" label="Utilities" />
+              <Form.Check type="checkbox" name="Medical" id="medical" label="Medical" />
+              <Form.Check type="checkbox" name="Personal" id="personal" label="Personal" />
+            </div>
+          </Form.Group>
         </FilterContainer>
-      </div>
+        <Button variant="primary" type="submit" size="sm">
+          Apply Filters
+        </Button>
+      </Form>
     </FiltersContainer>
   )
 }

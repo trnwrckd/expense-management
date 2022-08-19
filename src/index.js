@@ -7,12 +7,14 @@ import { Provider } from "react-redux"
 import incomeReducer from "./features/incomeSlice"
 import expenseReducer from "./features/expenseSlice"
 import listReducer from "./features/listSlice"
+import filterReducer from "./features/filteredListSlice"
 
 const store = configureStore({
   reducer: {
     income: incomeReducer,
     expense: expenseReducer,
     list: listReducer,
+    filtered: filterReducer,
   },
 })
 

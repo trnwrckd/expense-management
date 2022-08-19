@@ -8,7 +8,7 @@ export const incomeSlice = createSlice({
       state.value = action.payload
     },
     addIncome: (state, action) => {
-      state.value = Number.parseInt(state.value + action.payload)
+      state.value = Number.parseInt(state.value) + Number.parseInt(action.payload)
       localStorage.setItem("income", state.value)
     },
   },

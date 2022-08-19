@@ -1,21 +1,8 @@
-import React, { useEffect, useState } from "react"
-import styled from "styled-components"
-import { useSelector } from "react-redux/es/exports"
+import React from "react"
+import { ListContainer, ListItem } from "./StyledComponents"
 
-const ListContainer = styled.div`
-  overflow-y: auto;
-  margin: 1rem 0;
-`
-
-const ListItem = styled.div`
-  border: 1px solid black;
-  border-radius: 10px;
-  margin: 0.5rem 0;
-  padding: 0.25rem 0.5rem;
-`
-
-export default function List() {
-  const list = useSelector((state) => state.list.value)
+export default function List(props) {
+  const list = props.list
 
   if (!list.length) {
     return (
